@@ -21,7 +21,7 @@ void makeMenu1()
 }
 
 
-void makeMenu2()
+void makeMenu22()
 {
 	printf("------------------------------------\n");
 	printf("	Books search\n");
@@ -33,9 +33,9 @@ void makeMenu2()
 	printf("please enter(0~3):");
 	
 }
-void searchbook()
+void searchbook2()
 {
-		makeMenu2();
+		makeMenu22();
 		Book tempBook; 
 		char *title;
 		char *author;
@@ -92,7 +92,7 @@ void keydown1()
 		printList(list1);
 		break;
 	case 4:
-		searchbook();
+		searchbook2();
 		break;
 	default:
 		break;
@@ -103,13 +103,14 @@ void run_interface() {
 
     list1=createHead();
     list2=createHead1();
-    int a=load_books(list1,"book.txt");
+    FILE *fp=fopen("book.txt", "r");
+    int a=load_books(fp,list1);
+    fclose(fp);
     while (1)
 	{
 		makeMenu1();
 		keydown1();
         if(!flag1)break;
-		system("pause");
 	}
     int b=store_books(list1,"book.txt");
 	return;

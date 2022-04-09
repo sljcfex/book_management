@@ -7,7 +7,7 @@
 #include<string.h>
 extern struct Node* list1;
 extern struct Nd* list2;
-void makeMenu()
+void makeMenu()//the user menu
 {
 	printf("------------------------------------\n");
 	printf("	user interface\n");
@@ -20,41 +20,42 @@ void makeMenu()
 	printf("please enter(0~4):");
 }
 
-int keydown2(users user) {
+int keydown2(users user) //the user's operation
+{
     int userkey = 0;
     int id;
     int i, j;
     scanf("%d", &userkey);
     switch (userkey) {
-        case 0:
+        case 0://exit
             printf("[ exit ]\n");
             printf("exit successfully\n");
-            return 1;
+            return 1;//end the useroperation
             break;
-        case 1:
-            printf("borrow books \n"); //书籍存在可以借阅，书籍的数量-1，不存在借阅失败
+        case 1://borrow books
+            printf("borrow books \n");
             printf("Please enter the id :\n");
             scanf("%d", &id);
 
             struct Node *posNode = list1->next;
-            int flag = 1;
+            int flag = 1;//record if the book exist in the system
             while (posNode != NULL) {
                 if (posNode->book.id == id) {
 
                     for (i = 1; i <= user.borrow; i++) {
-                        if (id == user.borrowid[i]) {
+                        if (id == user.borrowid[i]) {//the user has already borrowed target book
                             printf("you have already borrowed one copy of this book!\n");
                             flag = 0;
                         }
                     }
-                    if (posNode->book.copies > 0 && flag == 1) {
+                    if (posNode->book.copies > 0 && flag == 1) {//the copies in the system-1, the number of user borrowed book +1
                         posNode->book.copies--;
                         user.borrow++;
                         user.borrowid[user.borrow] = posNode->book.id;
                         printf("Borrowing successful！\n");
                         flag = 0;
                     } else if (posNode->book.copies <= 0) {
-                        printf("No books in stock, borrowing failed!\n");
+                        printf("No books in stock, borrowing failed!\n");//there is no any copy
                         flag = 0;
                     }
                 }
@@ -64,28 +65,28 @@ int keydown2(users user) {
                 printf("No related books, can not borrow!\n");
             break;
         case 2:
-            printf("【 return books 】\n"); // 当前书籍的数量+1
+            printf("[return books]\n"); //return book
             if (user.borrow) {
-                printf("ID\ttitle\tauthor\tyear\tcopies\n");
-                for (i = 1; i <= user.borrow; i++) {
+                printf("ID\ttitle\tauthor\tyear\tcopies\n");//print the header
+                for (i = 1; i <= user.borrow; i++) {//print the book list that the user borrowed
                     struct Node *posNode = list1->next;
-                    while (posNode != NULL) {
-                        if (posNode->book.id == user.borrowid[i]) {
+                    while (posNode != NULL) {//start iterating
+                        if (posNode->book.id == user.borrowid[i]) {//print the books
                             printf("%d\t%s\t%s\t%d\t%d\n", posNode->book.id, posNode->book.title, posNode->book.authors,
                                    posNode->book.year, posNode->book.copies);
                             break;
                         }
-                        posNode = posNode->next;
+                        posNode = posNode->next;//move to the next node
                     }
                 }
-                printf("Please enter the id :\n");
+                printf("Please enter the id :\n");//confirm target book
                 scanf("%d", &id);
 
                 struct Node *posNode = list1->next;
                 int flag = 1;
-                while (posNode != NULL) {
+                while (posNode != NULL) {//find the target book
                     if (posNode->book.id == id) {
-                        for (i = 1; i <= user.borrow; i++) {
+                        for (i = 1; i <= user.borrow; i++) {//update the user information
                             if (id == user.borrowid[i]) {
                                 posNode->book.copies++;
                                 user.borrowid[i] = -1;
@@ -129,7 +130,6 @@ void useroperate(users user)
 		{
 			break;
 		}
-		system("pause");
 
 	}
 	return;

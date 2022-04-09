@@ -20,31 +20,92 @@ void makeMenu3()
 }
 
 
+void makeMenu12()
+{
+    printf("------------------------------------\n");
+    printf("	Books search\n");
+    printf("\t0.exit\n");
+    printf("\t1.search by title\n");
+    printf("\t2.search by author\n");
+    printf("\t3.search by year\n");
+    printf("------------------------------------\n");
+    printf("please enter(0~3):");
 
+}
+void searchbook1()
+{
+    makeMenu12();
+    Book tempBook;
+    char *title;
+    char *author;
+    int year;
+    char temp[50];
+    struct Node* result = NULL;
+    int userkey;
+    scanf("%d",&userkey);
+    switch (userkey)
+    {
+        case 0:
+            printf("exit\n");
+            break;
+        case 1:
+
+            printf("please enter the title:\n");
+            memset(temp,'\0',50);
+            getchar();
+            gets(temp);
+            find_book_by_title (temp,list1);
+            break;
+        case 2:
+
+            printf("please enter the author:\n");
+            scanf("%s",author);
+            find_book_by_author (author,list1);
+            break;
+        case 3:
+
+            printf("please enter the year:\n");
+            scanf("%d",&year);
+            find_book_by_year(year,list1);
+            break;
+        default:
+            break;
+    }
+}
 void keydown3()
 {
-	Book tempBook; 
+
 	Book newbook;
 	int id;
 	int i;
 	struct Node* result = NULL;
 	int userkey = 0;
+
 	scanf("%d",&userkey);
-	switch (userkey)
-	{
-	case 0:
-		printf("[exit]\n");
-		flag=0;
-		break;
-	case 1:
-		
+
+	if(userkey== 0){
+        printf("[exit]\n");
+        flag=0;
+
+    }
+
+	else if (userkey==1)
+    {   char temp[50];
         printf("enter book information to add book\n");
         printf("please enter the book id:\n");
         scanf("%d",&newbook.id);
         printf("please enter the book title:\n");
-        scanf("%s",newbook.title);
+        memset(temp,'\0',50);
+        getchar();
+        gets(temp);
+        newbook.title=(char*) malloc(sizeof(strlen(temp)));
+        strcpy(newbook.title,temp);
         printf("please enter the book author:\n");
-        scanf("%s",newbook.authors);
+        memset(temp,'\0',50);
+        getchar();
+        gets(temp);
+        newbook.authors=(char*) malloc(sizeof(strlen(temp)));
+        strcpy(newbook.authors,temp);
         printf("please enter the book year:\n");
         scanf("%d",&newbook.year);
         printf("please enter the book copies:\n");
@@ -52,22 +113,22 @@ void keydown3()
 		i=add_book(newbook,list1);
         if(i)
             printf("add failed");
-		break;
-	case 2:
-		printf("enter the ID of the book you want to delete ");
-        
-        scanf("%d",&id);
-        remove_book(find_book_by_id (id,list1),list1);
-		break;
-	case 3:
+		}
+    else if (userkey==2) {
+        printf("enter the ID of the book you want to delete ");
+
+        scanf("%d", &id);
+        remove_book(find_book_by_id(id, list1), list1);
+    }
+    else if (userkey==3)
 		printList(list1);
-		break;
-	case 4:
-		searchbook();
-		break;
-	default:
-		break;
-	}
+
+    else if (userkey==4)
+		searchbook1();
+
+	else
+        return;
+
 }
 
 
