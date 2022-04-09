@@ -23,16 +23,15 @@ struct Node* createNode(Book book)//create new node
 struct Node* list1 = NULL;//Declaration header
 //saves the database of books in the specified file
 //returns 0 if books were stored correctly, or an error code otherwise
-int store_books(struct Node* headNode,const char* filename)
+int store_books(struct Node* headNode,FILE* file)
 {
-	FILE* fp = fopen(filename, "w");
 	struct Node* pMove = headNode->next;
 	while (pMove != NULL)
 	{
-		fprintf(fp, "%d\t%s\t%s\t%d\t%d\n", pMove->book.id, pMove->book.title, pMove->book.authors,pMove->book.year,pMove->book.copies);
+		fprintf(file, "%d\t%s\t%s\t%d\t%d\n", pMove->book.id, pMove->book.title, pMove->book.authors,pMove->book.year,pMove->book.copies);
 		pMove = pMove->next;
 	}
-	fclose(fp);
+	fclose(file);
 	return 0;
 }
 
@@ -41,50 +40,27 @@ int store_books(struct Node* headNode,const char* filename)
 //returns 0 if books were loaded correctly, or an error code otherwise
 int load_books(FILE* file,struct Node* headNode)
 {
-    int i;
     if (file == NULL)
     {
         printf("File opened failed, exit.");
         exit(0);
     }
-  //  if((file= fopen("book.txt","r"))==NULL){
-//        printf("File opened failed, exit.");
- //       exit(0);
-  //  }
-
     Book a;
-    getc(file);
-    if(feof(file))
-    {
-        fclose(file);
-        i=0;
-        return i;
-    }
-    rewind(file);
-    while ((!feof(file)))
-    {
-        a.title=(char *) malloc(150);
-        a.authors=(char *) malloc(150);
-        fscanf(file,"%d%s%s%d%d",&a.id,a.title,a.authors,&a.year,&a.copies);
-        add_book(a,headNode);
-    }
-
-//    char temp[50];
- //   memset(temp, '\0', 50);
-  //  char buf[55];
- //   int tempId,tempYear,tempCopies;
-    //char* title = (char*) malloc(sizeof(char)*50);
-  //  char* authors = (char*) malloc(sizeof(char)*50);
-    //while ( fscanf(file, "%d %s %s %d %d", &a.id, a.title, a.authors, &a.year, &a.copies)!= EOF) {
-
-         // split string
-   //     a.id=tempId;
-    //    a.title=title;
-    //    a.authors=authors;
-    //    a.year=tempYear;
-    //    a.copies=tempCopies;
-   //     add_book(a,headNode);
-  //  }
+    char temp[55];
+    memset(temp,'\0',50);
+    char buf[55];
+    int tempId,tempYear,tempCopies;
+    while ( (fgets(buf, 50, file)) != NULL) {
+        char* title = (char*) malloc(sizeof(char)*50);
+        char* authors = (char*) malloc(sizeof(char)*50);
+        sscanf(buf, "%d %s %s %d %d", &tempId, title, authors, &tempYear, &tempCopies);//split string
+       a.id=tempId;
+       a.title=title;
+       a.authors=authors;
+       a.year=tempYear;
+       a.copies=tempCopies;
+       add_book(a,headNode);
+   }
     return 0;
 }
 
@@ -121,8 +97,25 @@ Book find_book_by_id (const int id,struct Node* headNode)//find book by book id
         }
         posNode=posNode->next;//move to the next node
     }
-}
 
+
+
+}
+int find_book_by_id_bool (const int id,struct Node* headNode)//find book by book id
+{
+    struct Node* posNode = headNode->next;//Start iterating from the next one in the head node
+    while(posNode!=NULL)//start iterating
+    {
+        if(posNode->book.id==id)//if target book found
+        {
+            return 1;//return target book
+        }
+        posNode=posNode->next;//move to the next node
+    }
+    return 0;
+
+
+}
 //removes a book from the library
 //returns 0 if the book could be successfully removed, or an error code otherwise.
 int remove_book(Book book,struct Node* headNode)
@@ -130,7 +123,7 @@ int remove_book(Book book,struct Node* headNode)
 	unsigned int id=book.id;//declare book id
 	struct Node* posLeftNode = headNode;
 	struct Node* posNode = headNode->next;
-	while (posNode != NULL && posNode->book.id==id)
+	while (posNode != NULL && posNode->book.id!=id)
 	{
 		posLeftNode = posNode;
 		posNode = posLeftNode->next;
@@ -141,7 +134,6 @@ int remove_book(Book book,struct Node* headNode)
 	}
 	else
 	{
-		printf("\n");
 		posLeftNode->next = posNode->next;
 		free(posNode);
 		posNode = NULL;
@@ -161,7 +153,7 @@ BookList find_book_by_title (const char *title,struct Node* headNode)//find book
 	struct Node* posNode1 = headNode->next;// one node to iterate the list
 	while (posNode != NULL )
 	{
-		if( strcmp(posNode->book.title,title))
+		if( strcmp(posNode->book.title,title)==0)
 		{
 			booklist.length++;
 		}
@@ -175,7 +167,7 @@ BookList find_book_by_title (const char *title,struct Node* headNode)//find book
 	printf("ID\ttitle\tauthor\tyear\tcopies\n");
 	while (posNode1 != NULL )
 	{
-		if( strcmp(posNode->book.title, title)==0)
+		if( strcmp(posNode1->book.title, title)==0)
 		{
 			printf("%d\t%s\t%s\t%d\t%d\n", posNode1->book.id, posNode1->book.title, posNode1->book.authors,posNode1->book.year,posNode1->book.copies);
 		}
@@ -210,7 +202,7 @@ BookList find_book_by_author (const char *author,struct Node* headNode)
 	printf("ID\ttitle\tauthor\tyear\tcopies\n");
 	while (posNode1 != NULL )
 	{
-		if(strcmp(posNode->book.authors, author)==0)
+		if(strcmp(posNode1->book.authors, author)==0)
 		{
 			printf("%d\t%s\t%s\t%d\t%d\n", posNode1->book.id, posNode1->book.title, posNode1->book.authors,posNode1->book.year,posNode1->book.copies);
 		}

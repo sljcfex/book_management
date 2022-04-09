@@ -20,7 +20,8 @@ struct Nd
 struct Nd* create(users user);
 struct Nd* createHead1();
 void add_user(users user,struct Nd* headNode);
-
+void load_users(FILE * file,struct Nd * headNode);
+void store_users(struct Nd* headNode,const char* filename);
 void userreg();
 
 void userlog();

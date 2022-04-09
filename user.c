@@ -1,5 +1,4 @@
 #include "user.h"
-#include "interface.h"
 #include "userop.h"
 #include "admini.h"
 #include <stdio.h>
@@ -7,8 +6,8 @@
 #include<string.h>
 
 
-struct Nd* list2 = NULL;
 extern struct Node* list1;
+
 struct Nd* create( users user)
 {
 	struct Nd* newNode = (struct Nd*)malloc(sizeof(struct Nd));
@@ -16,7 +15,7 @@ struct Nd* create( users user)
 	newNode->next = NULL;
 	return newNode;
 }
-
+struct Nd* list2 = NULL;
 struct Nd* createHead1()
 {
     struct Nd* headNode = (struct Nd*)malloc(sizeof(struct Nd));
@@ -82,17 +81,16 @@ void userreg()
    {  
      char id[20];
      printf("please enter your id:\n");
-       scanf("%s",id);
+     getchar();
+     gets(id);
      struct Nd* posNode = list2->next;
-
      while(posNode != NULL)
      {  
-       if (strcmp(id, posNode->user.id)==0||strcmp(id,"librarian")) 
+       if (strcmp(id, posNode->user.id)==0||strcmp(id,"librarian")==0)
        {
          printf("This username already exists! Please re-register!\n");   
          return;   
        }
-
          posNode = posNode->next; 
      }
 	users a;
@@ -107,6 +105,10 @@ void userreg()
       
       strcpy(a.id, id);
       strcpy(a.psw, psw);
+      a.borrow=0;
+      int x;
+      for(x=0;x<=15;x++)
+          a.borrowid[x]=0;
        add_user(a,list2);
       printf("Account registered successfully, please log in!\n"); 
    return;
@@ -117,6 +119,52 @@ void userreg()
       scanf("%s",psw1);
     }
   }while(strcmp(psw,psw1)==0);
+}
+void load_users(FILE * file,struct Nd * headNode)
+{
+    if (file == NULL)
+    {
+        printf("File opened failed, exit.");
+        exit(0);
+    }
+    users a;
+    char temp[55];
+    memset(temp,'\0',50);
+    char buf[55];
+    int tempborrow,tempid;
+    while ( (fgets(buf, 50, file)) != NULL) {
+        char* id = (char*) malloc(sizeof(char)*50);
+        char* psw = (char*) malloc(sizeof(char)*50);
+        sscanf(buf, "%s %s %d",  id, psw, &tempborrow);//split string
+        strcpy(a.id,id);
+        strcpy(a.psw,psw);
+        a.borrow=tempborrow;
+        int i;
+        for(i=1;i<=a.borrow;i++)
+        {
+            sscanf(buf,"%d",&tempid);
+            a.borrowid[i]=tempid;
+        }
+
+        add_user(a,headNode);
+    }
+}
+void store_users(struct Nd* headNode,const char* filename)
+{
+    FILE* fp = fopen(filename, "w");
+    struct Nd* pMove = headNode->next;
+    while (pMove != NULL)
+    {
+        int i;
+        fprintf(fp, "%s\t%s\t%d\t", pMove->user.id, pMove->user.psw, pMove->user.borrow);
+        for(i=1;i<=pMove->user.borrow;i++)
+            fprintf(fp,"%d\t",pMove->user.borrowid[i]);
+        fprintf(fp,"\n");
+
+        pMove = pMove->next;
+    }
+    fclose(fp);
+
 }
 
 void userlog()

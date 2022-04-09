@@ -1,4 +1,3 @@
-#include "interface.h"
 #include "book_management.h"
 #include"admini.h"
 #include <stdio.h>
@@ -43,34 +42,31 @@ void searchbook1()
     struct Node* result = NULL;
     int userkey;
     scanf("%d",&userkey);
-    switch (userkey)
-    {
-        case 0:
+        if(userkey==0)
             printf("exit\n");
-            break;
-        case 1:
+        if(userkey==1){
 
             printf("please enter the title:\n");
             memset(temp,'\0',50);
             getchar();
             gets(temp);
             find_book_by_title (temp,list1);
-            break;
-        case 2:
-
+        }
+        if(userkey==2){
             printf("please enter the author:\n");
-            scanf("%s",author);
-            find_book_by_author (author,list1);
-            break;
-        case 3:
+            memset(temp,'\0',50);
+            getchar();
+            gets(temp);
+            find_book_by_author (temp,list1);}
 
-            printf("please enter the year:\n");
-            scanf("%d",&year);
-            find_book_by_year(year,list1);
-            break;
-        default:
-            break;
-    }
+
+         if(userkey==2)
+         {
+             printf("please enter the year:\n");
+             scanf("%d",&year);
+             find_book_by_year(year,list1);
+         }
+
 }
 void keydown3()
 {
@@ -115,10 +111,14 @@ void keydown3()
             printf("add failed");
 		}
     else if (userkey==2) {
-        printf("enter the ID of the book you want to delete ");
-
+        printf("enter the ID of the book you want to delete:\n ");
         scanf("%d", &id);
-        remove_book(find_book_by_id(id, list1), list1);
+        if(find_book_by_id_bool(id, list1)){
+            remove_book(find_book_by_id(id, list1), list1);
+            printf("delete successfully\n");
+        }
+        else
+            printf("can't find target book\n");
     }
     else if (userkey==3)
 		printList(list1);

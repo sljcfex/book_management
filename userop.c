@@ -1,9 +1,7 @@
 #include "book_management.h"
 #include "userop.h"
-#include "interface.h"
 #include "user.h"
 #include <stdio.h>
-#include<stdlib.h>
 #include<string.h>
 extern struct Node* list1;
 extern struct Nd* list2;
@@ -18,6 +16,54 @@ void makeMenu()//the user menu
 	printf("\t4.search books\n");
 	printf("------------------------------------\n");
 	printf("please enter(0~4):");
+}
+void makeMenu23()//the search menu
+{
+    printf("------------------------------------\n");
+    printf("	Books search\n");
+    printf("\t0.exit\n");
+    printf("\t1.search by title\n");
+    printf("\t2.search by author\n");
+    printf("\t3.search by year\n");
+    printf("------------------------------------\n");
+    printf("please enter(0~3):");
+
+}
+void searchbook23()//the search function
+{
+    makeMenu23();
+    int year;
+    struct Node* result = NULL;
+    int userkey;
+    char temp[50];
+    scanf("%d",&userkey);
+    switch (userkey)
+    {
+        case 0:
+            printf("exit\n");
+            break;
+        case 1://find book by title
+            printf("please enter the title:\n");
+            memset(temp,'\0',50);
+            getchar();
+            gets(temp);
+            find_book_by_title (temp,list1);
+            break;
+        case 2://find book by author
+            printf("please enter the author:\n");
+            memset(temp,'\0',50);
+            getchar();
+            gets(temp);
+            find_book_by_author (temp,list1);
+            break;
+        case 3://find book by year
+            printf("please enter the year:\n");
+            scanf("%d",&year);
+            find_book_by_year(year,list1);
+            break;
+        default:
+            break;
+    }
 }
 
 int keydown2(users user) //the user's operation
@@ -41,7 +87,6 @@ int keydown2(users user) //the user's operation
             int flag = 1;//record if the book exist in the system
             while (posNode != NULL) {
                 if (posNode->book.id == id) {
-
                     for (i = 1; i <= user.borrow; i++) {
                         if (id == user.borrowid[i]) {//the user has already borrowed target book
                             printf("you have already borrowed one copy of this book!\n");
@@ -50,9 +95,9 @@ int keydown2(users user) //the user's operation
                     }
                     if (posNode->book.copies > 0 && flag == 1) {//the copies in the system-1, the number of user borrowed book +1
                         posNode->book.copies--;
-                        user.borrow++;
+                        user.borrow+=1;
                         user.borrowid[user.borrow] = posNode->book.id;
-                        printf("Borrowing successful！\n");
+                        printf("Borrowing successful!\n");
                         flag = 0;
                     } else if (posNode->book.copies <= 0) {
                         printf("No books in stock, borrowing failed!\n");//there is no any copy
@@ -107,18 +152,17 @@ int keydown2(users user) //the user's operation
                 if (flag)
                     printf("The source of this book is illegal!\n");
                 break;
-                case 3:
+                case 3://print the book list
                     printList(list1);
                 break;
-                case 4:
-                    searchbook();
+                case 4://search book
+                    searchbook23();
                 default:
                     break;
             }
 
     }return 0;
 }
-
 
 
 void useroperate(users user)

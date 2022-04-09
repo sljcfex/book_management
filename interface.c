@@ -1,7 +1,6 @@
 #include "interface.h"
 #include "book_management.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "user.h"
 extern struct Node* list1;
@@ -36,12 +35,10 @@ void makeMenu22()
 void searchbook2()
 {
 		makeMenu22();
-		Book tempBook; 
-		char *title;
-		char *author;
 		int year; 
 		struct Node* result = NULL;
 		int userkey;
+         char temp[50];
 		scanf("%d",&userkey);
 		switch (userkey)
 		{
@@ -51,14 +48,18 @@ void searchbook2()
 		    case 1:
 			
 			    printf("please enter the title:\n");
-			    scanf("%s",title);
-			    find_book_by_title (title,list1);
+                memset(temp,'\0',50);
+                getchar();
+			    gets(temp);
+			    find_book_by_title (temp,list1);
 			    break;
 		    case 2:
 			
                 printf("please enter the author:\n");
-                scanf("%s",author);
-                find_book_by_author (author,list1);
+                memset(temp,'\0',50);
+                getchar();
+                gets(temp);
+                find_book_by_author (temp,list1);
                 break;
             case 3:
 
@@ -83,6 +84,7 @@ void keydown1()
 		flag1=0;
 		break;
 	case 1:
+
 		userlog();
 		break;
 	case 2:
@@ -104,14 +106,19 @@ void run_interface() {
     list1=createHead();
     list2=createHead1();
     FILE *fp=fopen("book.txt", "r");
+    FILE *fp1=fopen("user.txt", "r");
     int a=load_books(fp,list1);
+    load_users(fp1,list2);
     fclose(fp);
+    fclose(fp1);
     while (1)
 	{
 		makeMenu1();
 		keydown1();
         if(!flag1)break;
 	}
-    int b=store_books(list1,"book.txt");
+    FILE* fp2 = fopen("book.txt", "w");
+    int b=store_books(list1,fp2);
+    store_users(list2,"user.txt");
 	return;
 }
